@@ -5,13 +5,18 @@
 # por fuerza bruta (llamando con F) 
 
 import time
+import argparse
 
-def main():
+def main(N,M):
     ## Lectura de command line
-    N = 100
+    #N = 100
     start_time = time.time_ns()
-    prime_list = primes_until_N_E(N)
+    if M == "E":
+        prime_list = primes_until_N_E(N)
+    if M == "F":
+        prime_list = primes_until_N_F(N)
     diff = time.time_ns()-start_time
+    # TODO que hago? Los imprimo?
     print(prime_list)
     print(diff)
 
@@ -63,4 +68,14 @@ def primes_until_N_F( N ):
 
 
 if __name__ == '__main__':
-  main()
+    parser = argparse.ArgumentParser(description='parser.')
+    parser.add_argument('number',type=int)
+    parser.add_argument('method')
+    parsed_args = parser.parse_args()
+    N = parsed_args.number
+    M = parsed_args.method
+    # TODO hacer esto mejor con los métodos de argparse
+    if not M == "E" and not M == "F":
+        print("Bad Method")
+        quit()
+    main(N,M)
