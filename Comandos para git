@@ -1,0 +1,15 @@
+Les dejo los comandos que uso para git. Se lo pueden bajar de https://desktop.github.com/
+
+Comandos para git:
+
+cd D:/Desktop/CarpetaDelProyecto
+
+git pull
+git status
+git add .
+git commit -m "comentario"
+git push
+
+Generalmente van en ese orden. Primero pull para tener todo lo que tiene el proyecto, después status para ver si tenés algo que agregar, después agregas todo lo que tenés, después lo commiteas y por último lo subís al repo con el comando git push.
+
+Cualquier otra cosa útil que consideren útil de git agreguenla en este archivo.
