@@ -27,7 +27,7 @@ def primes_until_N_E( N ):
     if N == 1:
         return []
     if N == 2:
-        return [2]
+        return []
     primes = [True] * N;
     primes[0] = primes[1] = False;
     # Saco los pares para mejorar después la criba
@@ -52,15 +52,14 @@ def primes_until_N_F( N ):
     # Lo hace de forma Naive
     if N == 1:
         return []
-    if N == 2:
-        return [2]
-    primes = [2]
-    for i in range(3,N):
+    primes = []
+    for i in range(2,N):
         isprime = True
-        for j in primes:
+        j = 2
+        while isprime == True and j < i:
             if i%j==0:
                 isprime = False
-                break
+            j = j+1
         if isprime == True:
             primes.append(i)
     return primes
@@ -75,6 +74,7 @@ if __name__ == '__main__':
     N = parsed_args.number
     M = parsed_args.method
     # TODO hacer esto mejor con los métodos de argparse
+    # TODO agregar opciones para elegir que imprimir
     if not M == "E" and not M == "F":
         print("Bad Method")
         quit()
