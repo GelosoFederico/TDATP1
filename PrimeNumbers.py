@@ -78,7 +78,4 @@ if __name__ == '__main__':
     M = parsed_args.method
     time_flag = parsed_args.time
     list_flag = parsed_args.list
-    if not M == "E" and not M == "F":
-        print("Bad Method")
-        quit()
     main(N,M,time_flag,list_flag)
