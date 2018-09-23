@@ -1,0 +1,11 @@
+Pseudocódigo
+Mientras haya recitales con lugares libres que no le hayan propuesto a todas las bandas:
+ 	Elegir un recital con lugar o lugares libres
+	Para ese recital recorrer su lista de preferencias (siguiendo por la próxima a la última que le propuso) y para cada banda:
+		Si no hay más lugares en el recital:
+			break
+		Si la banda puede tocar en un lugar más:
+			Agregar la banda al recital
+		En otro caso:
+			Mirar la lista de preferencias de la banda y si el recital actual está mejor rankeado que alguno donde ya toca:
+				Cambiar el recital peor rankeado por el nuevo 

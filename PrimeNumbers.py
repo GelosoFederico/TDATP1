@@ -7,7 +7,7 @@
 import time
 import argparse
 
-def main(N,M,time_flag,list_flag):
+def main(N,M):
     ## Lectura de command line
     #N = 100
     start_time = time.time()
@@ -16,10 +16,8 @@ def main(N,M,time_flag,list_flag):
     if M == "F":
         prime_list = primes_until_N_F(N)
     diff = time.time()-start_time
-    if list_flag == True:
-        print(prime_list)
-    if time_flag == True:
-        print(diff)
+    print(prime_list)
+    print(diff)
 
 
 def primes_until_N_E( N ):
@@ -71,14 +69,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='parser.')
     parser.add_argument('number',type=int)
     parser.add_argument('method',choices=['E', 'F'])
-    parser.add_argument('-T', '--time', action='store_true')
-    parser.add_argument('-L', '--list', action='store_true')
     parsed_args = parser.parse_args()
     N = parsed_args.number
     M = parsed_args.method
-    time_flag = parsed_args.time
-    list_flag = parsed_args.list
     if not M == "E" and not M == "F":
         print("Bad Method")
         quit()
-    main(N,M,time_flag,list_flag)
+    main(N,M)
