@@ -1,75 +1,84 @@
-import random
+import sys,manejo_archivos
 
 #N = Cantidad de recitales
 #M = Cantidad de bandas
 #X = Cantidad de bandas que pueden contratar los recitales
 #Y = Cantidad de recitales en los que puede participar una banda.
-
-def obtener_valores():
-    numeros = raw_input("A continuacion Ingrese los valores numericos enteros N, M, X e Y: ")
-    N, M, X, Y = map(int, numeros.split())
-    return N, M, X, Y
-
-#Genera N archivos de recital con sus preferencias en forma random, y M archivos para las bandas con sus preferencias random.
-def generar_archivos(N, M):
-    for i in range(N):
-        recital_nro = 'recital_' +  str(i+1) + '.txt'
-        with open(recital_nro, 'w+') as recital:
-            recital_preferencias = random.sample(range(1, M + 1), M)
-            for preferencia in recital_preferencias:
-                recital.write(str(preferencia))
-                recital.write(str('\n'))
-    for i in range(M):
-        banda_nro = 'banda_' +  str(i+1) + '.txt'
-        with open(banda_nro, 'w+') as banda:
-            banda_preferencias = random.sample(range(1, N + 1), N)
-            for preferencia in banda_preferencias:
-                banda.write(str(preferencia))
-                banda.write(str('\n'))
-
-def leer_archivos(N, M):
-    recitales_preferencias = {}
-    for i in range(1, N + 1):
-        recital_nro = 'recital_' +  str(i) + '.txt'
-        recital_preferencias = []
-        with open(recital_nro, 'r') as recital:
-            for preferencia in range(M):
-                recital_preferencias.append(int(recital.readline()))
-        recitales_preferencias[i] = recital_preferencias
-    bandas_preferencias = {}
-    for i in range(1, M + 1):
-        banda_nro = 'banda_' +  str(i) + '.txt'
-        banda_preferencias = []
-        with open(banda_nro, 'r') as banda:
-            for preferencia in range(N):
-                banda_preferencias.append(int(banda.readline()))
-        bandas_preferencias[i] = banda_preferencias
-    return recitales_preferencias, bandas_preferencias
     
 def variante_Gale_Shapley(recitales_preferencias, bandas_preferencias, X, Y):
-    #Usar diccs para ver las bandas y recitales que se juntan y quedan libres
+	recitales_libres = []
+	bandas_por_recital = {}
+	recitales_por_banda = {}
+	for i in range(1, N+1):
+		recitales_libres.append(i)
+		bandas_por_recital[i] = [] 
+	for j in range(1, M+1):	
+		recitales_por_banda[j] = []
+	recitales_ult_propuesto = [0] * N
+	
+	while len(recitales_libres)>0:
+		recital_act = recitales_libres.pop()
+		for i in range(recitales_ult_propuesto[recital_act-1], M):
+			banda_act = recitales_preferencias[recital_act][i]
+			if len(bandas_por_recital[recital_act]) == X:
+				break
+			if len(recitales_por_banda[banda_act]) < Y:
+				recitales_por_banda[banda_act].append(recital_act)
+				bandas_por_recital[recital_act].append(banda_act)
+			elif banda_prefiere_recital_nuevo(banda_act, recital_act, recitales_por_banda, bandas_preferencias):
+				recital_viejo = reemplazar_recital_viejo_por_nuevo(banda_act, recital_act, recitales_por_banda, bandas_por_recital, bandas_preferencias)
+				if recitales_ult_propuesto[recital_viejo-1] < (M-1):
+					recitales_libres.append(recital_viejo)
+			recitales_ult_propuesto[recital_act-1] += 1
+	
+	imprimir_resultados(bandas_por_recital)
+	
+
+def banda_prefiere_recital_nuevo(banda_act, recital_act, recitales_por_banda, bandas_preferencias):
+	for x in range(len(bandas_preferencias[banda_act])-1, 0, -1):
+		if bandas_preferencias[banda_act][x] in recitales_por_banda[banda_act]:
+			return True
+		if bandas_preferencias[banda_act][x] == recital_act:
+			return False
+	
+	
+def reemplazar_recital_viejo_por_nuevo(banda_act, recital_act, recitales_por_banda, bandas_por_recital, bandas_preferencias):
+	for x in range(len(bandas_preferencias[banda_act])-1, 0, -1):
+		if bandas_preferencias[banda_act][x] in recitales_por_banda[banda_act]:
+			recital_viejo = bandas_preferencias[banda_act][x]
+			recitales_por_banda[banda_act].remove(recital_viejo)
+			recitales_por_banda[banda_act].append(recital_act)
+			bandas_por_recital[recital_viejo].remove(banda_act)
+			bandas_por_recital[recital_act].append(banda_act)
+			return recital_viejo
+
+
+def imprimir_resultados(bandas_por_recital):
+	print("Recital | Bandas que tocan")
+	print("--------------------------")
+	for x in range(1, len(bandas_por_recital)+1):
+		print("   {}    | {}".format(x, bandas_por_recital[x]))
+
     
-def main():
-    '''try:
-        N, M, X, Y  = obtener_valores()
-    except:
-        print ("No ha ingresado los 4 numeros necesarios. El programa ha finalizado.")
-        exit() '''
-    N, M, X, Y = 10, 5, 2, 2
-    generar_archivos(N, M)
-    recitales_preferencias, bandas_preferencias = leer_archivos(N, M)
+def main(N,M,X,Y):
+    manejo_archivos.generar_archivos(N, M)
+    recitales_preferencias, bandas_preferencias = manejo_archivos.leer_archivos(N, M)
     variante_Gale_Shapley(recitales_preferencias, bandas_preferencias, X, Y)
     print("Fin del programa")
-    
 
-main()
+	
+	
+if len(sys.argv)!=5:
+	print("Se deben ingresar los cuatro parametros: N, M, X e Y")
+	exit()
+try:
+    N = int(sys.argv[1])
+    M = int(sys.argv[2])
+    X = int(sys.argv[3])
+    Y =	int(sys.argv[4])
+except ValueError:
+	print("Se deben ingresar 4 valores numericos")
+	exit()
 
-    
-N = 3 #recitales
-M = 3 #bandas
+main(N,M,X,Y)	
 
-
-
-
-            
-    
