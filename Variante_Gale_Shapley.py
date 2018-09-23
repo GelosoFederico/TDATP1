@@ -27,7 +27,7 @@ def variante_Gale_Shapley(recitales_preferencias, bandas_preferencias, X, Y):
 				bandas_por_recital[recital_act].append(banda_act)
 			elif banda_prefiere_recital_nuevo(banda_act, recital_act, recitales_por_banda, bandas_preferencias):
 				recital_viejo = reemplazar_recital_viejo_por_nuevo(banda_act, recital_act, recitales_por_banda, bandas_por_recital, bandas_preferencias)
-				if recitales_ult_propuesto[recital_viejo-1] < (M-1):
+				if recitales_ult_propuesto[recital_viejo-1] < M:
 					recitales_libres.append(recital_viejo)
 			recitales_ult_propuesto[recital_act-1] += 1
 	
